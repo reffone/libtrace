@@ -17,15 +17,15 @@ jobs:
           - amd64
         target:
           - "centos:7"
-          - "fedora:35"
-          - "fedora:36"
-          - "rockylinux:8.5"
-          - "almalinux:8.5"
+          - "fedora:37"
+          - "fedora:38"
+          - "rockylinux:8"
+          - "rockylinux:9"
 
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install prereq packages
         run: ./rpmpkg-setup.sh ${{ matrix.target }}
       - name: Build packages
@@ -36,7 +36,7 @@ jobs:
           mkdir -p packages/${DIRNAME}
           cp ~/rpmbuild/RPMS/x86_64/*.rpm packages/${DIRNAME}/
       - name: Publish packages to cloudsmith
-        uses: salcock/action-cloudsmith-upload-packages@1.6
+        uses: salcock/action-cloudsmith-upload-packages@v1.7
         with:
           path: packages/
           repo: ${{ secrets.CLOUDSMITH_OWNER }}/libtrace

@@ -16,16 +16,16 @@ jobs:
          arch:
            - amd64
          target:
-           - "debian:stretch"
            - "debian:buster"
            - "debian:bullseye"
+           - "debian:bookworm"
            - "ubuntu:bionic"
            - "ubuntu:focal"
            - "ubuntu:jammy"
 
      steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install prereq packages
         run: ./debpkg-setup.sh
       - name: Build packages
@@ -36,7 +36,7 @@ jobs:
           mkdir -p packages/${DIRNAME}
           cp ../*.deb packages/${DIRNAME}/
       - name: Publish packages to cloudsmith
-        uses: wanduow/action-cloudsmith-upload-packages@v1
+        uses: wandnz/action-cloudsmith-upload-packages@v1.6
         with:
           path: packages/
           repo: ${{ secrets.CLOUDSMITH_OWNER }}/libtrace

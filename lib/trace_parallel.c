@@ -1208,7 +1208,7 @@ inline static int trace_pread_packet_hasher_thread(libtrace_t *libtrace,
                 /* Give up the CPU time to another thread since we have
                  * packets or messages.
                  */
-                sched_yield();
+                usleep(200);
         }
 
         // Always grab at least one
@@ -2583,6 +2583,15 @@ DLLEXPORT int trace_set_hasher(libtrace_t *trace, enum hasher_types type,
         if ((type == HASHER_CUSTOM && !hasher) ||
             (type == HASHER_BALANCE && hasher)) {
                 return -1;
+        }
+
+        if (strcmp(trace->format->name, "ndag") == 0) {
+            /* ndag should never have a hasher applied to it -- each
+             * multicast stream is already hashed separately by the
+             * sender and trying to hash in libtrace will just make
+             * ndag run in single threaded mode instead.
+             */
+            return 0;
         }
 
         // Save the requirements
